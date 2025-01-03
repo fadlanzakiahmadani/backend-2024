@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Student;
+use Illuminate\Support\Facades\Validator;
 
 class StudentController extends Controller
 {
@@ -19,6 +20,19 @@ class StudentController extends Controller
         return response()->json($data, 200);
     }
     public function store(Request $request) {
+
+        $validator = Validator::make($request->all(), [
+            'nama' => 'required',
+            'nim' => 'numeric|required',
+            'email' => 'email|required',
+            'jurusan' => 'required'
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation errors',
+                'error' => $validator->errors()
+            ], 422);
+        }   
 
         $input = [
             'nama' => $request->nama,
